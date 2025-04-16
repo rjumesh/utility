@@ -1,0 +1,410 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>
+        {% block title %}{% endblock title %}
+    </title>
+    <meta content="ecommerce website we deliver product in 1 hour" name="description">
+    <meta content="ecommerce, amazon, flipkart, selling, products" name="keywords">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    
+    <!-- Fixed FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Template Main CSS File -->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+    <!-- Add this CSS to your stylesheet or in a style tag in the head -->
+    <style>
+        .cart-popover {
+            padding: 10px;
+        }
+        .popover {
+            max-width: 300px;
+        }
+        .cart-items {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a href="/" class="logo">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="img-fluid"> Utility Mart
+        </a>
+
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li><a class="nav-link scrollto active" href="/">Home <i class="fa-solid fa-house"></i> </a></li>
+            <li><a class="nav-link scrollto" href="/blog">Blog</a></li>
+            <li><a class="nav-link scrollto" href="/about">About</a></li>
+            <li><a class="nav-link scrollto" href="/checkout">Checkout <i class="fa-solid fa-bag-shopping"></i> </a></li>
+            
+            {% if request.user.is_authenticated %} 
+              <li><a class="nav-link scrollto" href="/profile">My Profile<br>{{request.user.username}} <i class="fa-regular fa-address-card"></i></a></li>
+            {% endif %}
+            <li>
+              <button type="button" class="nav-link scrollto bg-danger p-3 m-2 text-white" id="popcart" aria-label="View Cart">
+                <i class="fa-solid fa-cart-shopping"></i> Cart (<span id="cart">0</span>)
+              </button>
+            </li>
+            {% if request.user.is_authenticated %}
+              <li><a class="nav-link scrollto active" href="/auth/logout/">Logout <i class="fa-solid fa-right-from-bracket"></i> </a></li>
+            {% else %}
+              <li class="dropdown">
+                <a href="#"><span>SignIn <i class="fa-solid fa-user"></i></span> <i class="bi bi-chevron-down"></i></a>
+                <ul>
+                  <li><a href="/auth/signin/">Signup <i class="fa-solid fa-user"></i> </a></li>
+                  <li><a href="/auth/login/">Login <i class="fa-solid fa-hotel"></i> </a></li>
+                </ul>
+              </li>
+            {% endif %}
+            <li><a class="nav-link scrollto bg-dark p-3 m-2" href="/contact">Contact <i class="fa-regular fa-id-badge"></i></a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+      </div>
+    </header><!-- End Header -->
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero">
+      <div class="hero-container">
+        {% block content %}{% endblock content %}
+      </div>
+    </section><!-- End Hero -->
+
+    <main id="main">
+      {% block body %}{% endblock body %}
+    </main><!-- End #main -->
+
+
+
+<!-- ======= Footer CUSTOMIZED ======= -->
+<footer id="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-6 footer-contact">
+          <h3>Utility Mart</h3>
+          <p>
+            123 Commerce Street <br>
+            Mumbai, MH 400001<br>
+            India <br><br>
+            <strong>Phone:</strong> +91 98765 43210<br>
+            <strong>Email:</strong> support@utilitymart.com<br>
+          </p>
+        </div>
+
+        <div class="col-lg-2 col-md-6 footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="/">Home</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/about">About Us</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/checkout">My Cart</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/profile">My Orders</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Shop Categories</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="#">Electronics</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="#">Fashion</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="#">Home & Living</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="#">Books</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="#">Beauty & Health</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-6 footer-newsletter">
+          <h4>Get Latest Offers</h4>
+          <p>Subscribe to our newsletter for exclusive deals and updates!</p>
+          <form action="/subscribe/" method="post">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="Enter your email">
+            <input type="submit" value="Subscribe">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container d-md-flex py-4">
+    <div class="me-md-auto text-center text-md-start">
+      <div class="copyright">
+        &copy; {% now "Y" %} <strong><span>Utility Mart</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        <a href="/privacy-policy">Privacy Policy</a> | 
+        <a href="/terms">Terms of Service</a> | 
+        <a href="/shipping">Shipping Info</a> | 
+        <a href="/returns">Returns</a>
+      </div>
+    </div>
+    <div class="social-links text-center text-md-right pt-3 pt-md-0">
+      <a href="#" class="twitter"><i class="fa-brands fa-twitter"></i></a>
+      <a href="#" class="facebook"><i class="fa-brands fa-facebook"></i></a>
+      <a href="#" class="instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" class="whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="#" class="youtube"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+  </div>
+</footer><!-- End Footer -->
+
+    <!-- ======= Footer ======= -->
+    <!-- <footer id="footer">
+      <div class="footer-top">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3 col-md-6 footer-contact">
+              <h3>Tempo</h3>
+              <p>
+                A108 Adam Street <br>
+                New York, NY 535022<br>
+                United States <br><br>
+                <strong>Phone:</strong> +1 5589 55488 55<br>
+                <strong>Email:</strong> info@example.com<br>
+              </p>
+            </div>
+
+            <div class="col-lg-2 col-md-6 footer-links">
+              <h4>Useful Links</h4>
+              <ul>
+                <li><i class="bx bx-chevron-right"></i> <a href="/">Home</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="/about">About us</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
+              </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 footer-links">
+              <h4>Our Services</h4>
+              <ul>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+              </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-6 footer-newsletter">
+              <h4>Join Our Newsletter</h4>
+              <p>Subscribe for the latest updates.</p>
+              <form action="" method="post">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="Enter your email"><input type="submit" value="Subscribe">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container d-md-flex py-4">
+        <div class="me-md-auto text-center text-md-start">
+          <div class="copyright">
+            &copy; Copyright <strong><span>Tempo</span></strong>. All Rights Reserved
+          </div>
+          <div class="credits">
+            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          </div>
+        </div>
+        <div class="social-links text-center text-md-right pt-3 pt-md-0">
+          <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+          <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+          <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+          <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+        </div>  
+      </div>
+    </footer>
+    End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+      <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Added jQuery before other scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Vendor JS Files -->
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+        // Initialize cart
+        if (localStorage.getItem('cart') == null) {
+            var cart = {};
+        } else {
+            cart = JSON.parse(localStorage.getItem('cart'));
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const totalItems = Object.values(cart).reduce((sum, item) => sum + (item.quantity || 0), 0);
+            const cartElement = document.getElementById('cart');
+            if (cartElement) {
+                cartElement.textContent = totalItems;
+            }
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount(); // Update count after saving
+        }
+
+        // Update product div
+        function updateProductDiv(productId) {
+            const itemKey = 'pr' + productId;
+            const div = document.getElementById('divpr' + productId);
+            if (cart[itemKey] && cart[itemKey].quantity > 0) {
+                div.innerHTML = `
+                    <button id="minus${itemKey}" class="btn btn-success btn-sm minus">-</button>
+                    <span id="val${itemKey}" class="mx-1">${cart[itemKey].quantity}</span>
+                    <button id="plus${itemKey}" class="btn btn-success btn-sm plus">+</button>
+                `;
+            } else {
+                div.innerHTML = `<button id="pr${productId}" class="btn btn-primary cart">Add to Cart</button>`;
+            }
+        }
+
+        // Initialize cart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize cart count
+            updateCartCount();
+
+            // Add to cart button click
+            $(document).on('click', '.cart', function() {
+                const idStr = this.id.toString();
+                if (idStr.startsWith('pr')) {
+                    const productId = idStr.slice(2);
+                    const priceElement = document.getElementById('pricepr' + productId);
+                    const price = parseFloat(priceElement.textContent);
+                    
+                    if (cart[idStr]) {
+                        cart[idStr].quantity += 1;
+                    } else {
+                        const name = document.getElementById('namepr' + productId).textContent;
+                        cart[idStr] = { quantity: 1, name: name, price: price };
+                    }
+                    updateProductDiv(productId);
+                    saveCart();
+                }
+            });
+
+            // Minus button click
+            $(document).on('click', '.minus', function() {
+                const itemKey = 'pr' + this.id.slice(7);
+                const productId = this.id.slice(7);
+                if (cart[itemKey] && cart[itemKey].quantity > 0) {
+                    cart[itemKey].quantity -= 1;
+                    if (cart[itemKey].quantity === 0) {
+                        delete cart[itemKey];
+                    }
+                    updateProductDiv(productId);
+                    saveCart();
+                }
+            });
+
+            // Plus button click
+            $(document).on('click', '.plus', function() {
+                const itemKey = 'pr' + this.id.slice(6);
+                const productId = this.id.slice(6);
+                if (cart[itemKey]) {
+                    cart[itemKey].quantity += 1;
+                    updateProductDiv(productId);
+                    saveCart();
+                }
+            });
+
+            // Cart popover
+            $('#popcart').popover({
+                html: true,
+                container: 'body',
+                content: function() {
+                    let html = '<div class="cart-popover">';
+                    let total = 0;
+                    
+                    if (Object.keys(cart).length === 0) {
+                        html += '<p class="mb-0">Your cart is empty</p>';
+                    } else {
+                        Object.entries(cart).forEach(([key, item]) => {
+                            const itemTotal = item.price * item.quantity;
+                            total += itemTotal;
+                            html += `
+                                <div class="cart-items mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>${item.name} x ${item.quantity}</span>
+                                        <span>₹${itemTotal.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong>₹${total.toFixed(2)}</strong>
+                            </div>
+                            <div class="text-center mt-2">
+                                <a href="/checkout" class="btn btn-primary btn-sm">Checkout</a>
+                            </div>
+                        `;
+                    }
+                    
+                    html += '</div>';
+                    return html;
+                }
+            });
+
+            // Show popover on hover
+            $('#popcart').on('mouseenter', function() {
+                $(this).popover('show');
+            });
+
+            // Hide popover when mouse leaves
+            $('#popcart').on('mouseleave', function() {
+                setTimeout(() => {
+                    if (!document.querySelector('.popover:hover')) {
+                        $(this).popover('hide');
+                    }
+                }, 300);
+            });
+
+            // Keep popover open when hovering over it
+            $(document).on('mouseover', '.popover', function() {
+                clearTimeout($('#popcart').data('timeout'));
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+{% extends 'test/base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="product-image-container" style="height: 500px; overflow: hidden; background: #f8f9fa;">
+                <img 
+                    src="/media/{{ product.image }}" 
+                    class="img-fluid" 
+                    alt="{{ product.name }}"
+                    style="
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        padding: 20px;
+                    "
+                >
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-4">{{ product.name }}</h1>
+
+            <div class="product-description">
+                <p class="description-text">{{ product.description|linebreaks }}</p>
+            </div>
+
+            <h3 class="mb-4">Price: ₹{{ product.price }}</h3>
+            
+            <div class="mb-4">
+                <span id="divpr{{ product.id }}" class="divpr">
+                    <button id="pr{{ product.id }}" class="btn btn-primary cart">Add to Cart</button>
+                </span>
+            </div>
+
+            <div class="product-details">
+                <h4>Product Details</h4>
+                <ul class="list-unstyled">
+                    <li><strong>Category:</strong> {{ product.category.name }}</li>
+                    <li><strong>Stock:</strong> {{ product.stock }} units available</li>
+                    <li><strong>Status:</strong> {% if product.available %}In Stock{% else %}Out of Stock{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.product-image-container {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.product-details {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.product-details ul li {
+    margin-bottom: 0.5rem;
+}
+
+.product-description {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.description-text {
+    color: #6c757d;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+    white-space: pre-line;
+}
+</style>
+
+<script>
+// Initialize cart
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+
+// Update cart count
+function updateCartCount() {
+    const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    if (document.getElementById('cart')) {
+        document.getElementById('cart').textContent = totalItems;
+    }
+}
+
+// Save cart to localStorage
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Update product div
+function updateProductDiv(productId) {
+    const itemKey = 'pr' + productId;
+    const div = document.getElementById('divpr' + productId);
+    if (cart[itemKey] && cart[itemKey].quantity > 0) {
+        div.innerHTML = `
+            <button id="minus${itemKey}" class="btn btn-success btn-sm minus">-</button>
+            <span id="val${itemKey}" class="mx-1">${cart[itemKey].quantity}</span>
+            <button id="plus${itemKey}" class="btn btn-success btn-sm plus">+</button>
+        `;
+    } else {
+        div.innerHTML = `<button id="pr${productId}" class="btn btn-primary cart">Add to Cart</button>`;
+    }
+}
+
+$(document).ready(function() {
+    // Add to cart button click
+    $('.divpr').on('click', 'button.cart', function() {
+        const idStr = this.id.toString();
+        const productId = idStr.slice(2);
+        const price = parseFloat('{{ product.price }}');
+        
+        if (cart[idStr]) {
+            cart[idStr].quantity += 1;
+        } else {
+            const name = '{{ product.name }}';
+            cart[idStr] = { quantity: 1, name: name, price: price };
+        }
+        updateProductDiv(productId);
+        updateCartCount();
+        saveCart();
+    });
+
+    // Minus button click
+    $('.divpr').on('click', 'button.minus', function() {
+        const itemKey = 'pr' + this.id.slice(7);
+        const productId = this.id.slice(7);
+        if (cart[itemKey] && cart[itemKey].quantity > 0) {
+            cart[itemKey].quantity -= 1;
+            if (cart[itemKey].quantity === 0) {
+                delete cart[itemKey];
+            }
+            updateProductDiv(productId);
+            updateCartCount();
+            saveCart();
+        }
+    });
+
+    // Plus button click
+    $('.divpr').on('click', 'button.plus', function() {
+        const itemKey = 'pr' + this.id.slice(6);
+        const productId = this.id.slice(6);
+        if (cart[itemKey]) {
+            cart[itemKey].quantity += 1;
+            updateProductDiv(productId);
+            updateCartCount();
+            saveCart();
+        }
+    });
+
+    // Initialize the UI
+    updateProductDiv({{ product.id }});
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,35 @@
+{% extends 'test/base.html' %}
+{% load static %}
+
+{% block title %}Payment Failed{% endblock title %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-times-circle text-danger" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-4">Payment Failed</h2>
+                    <p class="card-text mb-4">We're sorry, but your payment could not be processed. Please try again or contact our support team.</p>
+                    
+                    {% if messages %}
+                        <div class="alert alert-danger">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="/checkout" class="btn btn-primary me-md-2">Try Again</a>
+                        <a href="/contact" class="btn btn-outline-secondary">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} 

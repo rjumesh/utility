@@ -1,0 +1,61 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paytm merchant payment page</title>
+</head>
+<body>
+<h1>Redirecting you to the merchant....</h1>
+<h1>Please do not refresh your page....</h1>
+<h1>Please do not refresh your page....</h1>
+<h1>Please do not refresh your page....</h1>
+
+
+<form action="https://securegw-stage.paytm.in/theia/processTransaction" method="post" name="paytm">
+    {% for key, value in param_dict.items %}
+    <input type="hidden" name="{{key}}" value="{{value}}">
+    {% endfor %}
+
+</form>
+</body>
+<script>
+document.paytm.submit()
+</script>
+</html> {% endcomment %}
+
+
+
+{% comment %} QWEN GEMERATED CODE {% endcomment %}
+<!DOCTYPE html>
+<html>
+<head>  
+    <title>Cashfree Payment</title>
+</head>
+<body>
+    <form id="cashfree-form" action="https://test.cashfree.com/billpay/checkout/post/submit" method="POST">
+        <input type="hidden" name="appId" value="{{ cftoken }}">
+        <input type="hidden" name="orderId" value="{{ order_id }}">
+        <input type="hidden" name="orderAmount" value="{{ order_amount }}">
+        <input type="hidden" name="orderCurrency" value="INR">
+        <input type="hidden" name="customerName" value="{{ customer_name }}">
+        <input type="hidden" name="customerEmail" value="{{ customer_email }}">
+        <input type="hidden" name="customerPhone" value="{{ customer_phone }}">
+        <input type="hidden" name="returnUrl" value="{{ return_url }}">
+        <input type="hidden" name="notifyUrl" value="{{ return_url }}">
+        <input type="hidden" name="cftoken" value="{{ cftoken }}">
+    </form>
+    <script>
+        document.getElementById('cashfree-form').submit();
+    </script>
+    {% comment %} <script>
+
+        window.addEventListener('load', function() {
+
+            const paymentStatus = "{{ payment_status }}";
+            if (paymentStatus === "FAILED") {
+                alert("Payment failed. Please try again.");
+            }
+        });
+    </script> {% endcomment %}
+</body>
+</html>

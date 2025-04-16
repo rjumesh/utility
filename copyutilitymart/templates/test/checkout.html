@@ -1,0 +1,189 @@
+{% extends 'test/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock title %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Checkout</h4>
+                </div>
+                <div class="card-body">
+                    {% if thank %}
+                        <div class="alert alert-success">
+                            <h4>Thank you for your order!</h4>
+                            <p>Your order ID is: {{ id }}</p>
+                        </div>
+                        
+                        <div class="payment-section mt-4">
+                            <h5>Complete Your Payment</h5>
+                            <p>Please complete your payment to confirm your order.</p>
+                            
+                            <button id="rzp-button" class="btn btn-primary btn-lg">Pay Now ₹{{ order.amount }}</button>
+                            
+                            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                            <script>
+                                var options = {
+                                    "key": "{{ razorpay_merchant_key }}",
+                                    "amount": "{{ razorpay_amount }}",
+                                    "currency": "{{ razorpay_currency }}",
+                                    "name": "Utility Mart",
+                                    "description": "Order #{{ id }}",
+                                    "order_id": "{{ razorpay_order_id }}",
+                                    "handler": function (response) {
+                                        // Handle the success callback
+                                        window.location.href = "{{ razorpay_callback_url }}";
+                                    },
+                                    "prefill": {
+                                        "name": "{{ order.name }}",
+                                        "email": "{{ order.email }}",
+                                        "contact": "{{ order.phone }}"
+                                    },
+                                    "theme": {
+                                        "color": "#007bff"
+                                    }
+                                };
+                                var rzp = new Razorpay(options);
+                                document.getElementById('rzp-button').onclick = function(e) {
+                                    rzp.open();
+                                    e.preventDefault();
+                                }
+                            </script>
+                        </div>
+                    {% else %}
+                        <form action="/checkout/" method="post">
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address1" class="form-label">Address Line 1</label>
+                                <input type="text" class="form-control" id="address1" name="address1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address2" class="form-label">Address Line 2</label>
+                                <input type="text" class="form-control" id="address2" name="address2">
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="zip_code" class="form-label">ZIP Code</label>
+                                    <input type="text" class="form-control" id="zip_code" name="zip_code" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            
+                            <input type="hidden" name="itemsJson" id="itemsJson">
+                            <input type="hidden" name="amt" id="amt">
+                            
+                            <button type="submit" class="btn btn-primary">Place Order</button>
+                        </form>
+                        
+                        <script>
+                            // Display cart items
+                            function displayCart() {
+                                const cartItems = document.getElementById("cart-items");
+                                const cartTotal = document.getElementById("cart-total");
+                                let cart = JSON.parse(localStorage.getItem("cart") || "{}");
+                                let total = 0;
+                                
+                                if (Object.keys(cart).length === 0) {
+                                    cartItems.innerHTML = "<p>Your cart is empty</p>";
+                                    cartTotal.textContent = "₹0";
+                                    // Make sure form fields are set even if cart is empty
+                                    document.getElementById("amt").value = 0;
+                                    document.getElementById("itemsJson").value = JSON.stringify({});
+                                    return;
+                                }
+                                
+                                console.log("Cart contents:", cart); // Debug cart structure
+                                
+                                let html = "";
+                                for (let id in cart) {
+                                    const item = cart[id];
+                                    
+                                    // Safety checks to avoid NaN
+                                    const quantity = parseInt(item.quantity) || 0;
+                                    const price = parseFloat(item.price) || 0;
+                                    const name = item.name || "Unknown Item";
+                                    
+                                    const itemTotal = quantity * price;
+                                    total += itemTotal;
+                                    
+                                    html += `
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <div>
+                                                <span class="fw-bold">${name}</span>
+                                                <span class="text-muted">x${quantity}</span>
+                                            </div>
+                                            <div>₹${itemTotal.toFixed(2)}</div>
+                                        </div>
+                                    `;
+                                }
+                                
+                                cartItems.innerHTML = html;
+                                cartTotal.textContent = `₹${total.toFixed(2)}`;
+                                
+                                // Set the total amount in the hidden field
+                                document.getElementById("amt").value = total.toFixed(2);
+                                
+                                // Set the cart items in the hidden field
+                                document.getElementById("itemsJson").value = JSON.stringify(cart);
+                                
+                                console.log("Total amount:", total.toFixed(2)); // Debug total
+                            }
+                            
+                            // Call the function when the page loads
+                            document.addEventListener('DOMContentLoaded', displayCart);
+                        </script>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div id="cart-items">
+                        <!-- Cart items will be displayed here -->
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between">
+                        <h5>Total:</h5>
+                        <h5 id="cart-total">₹0</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

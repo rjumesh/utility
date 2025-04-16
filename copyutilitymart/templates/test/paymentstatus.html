@@ -1,0 +1,100 @@
+{% comment %} {% extends 'base.html' %}
+{% block title %}payment status{% endblock title %}
+{% block body %}
+<h1 class="text-center">Payment Status</h1>
+
+<div class="container mt-2">
+    {% for message in messages %}
+
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      <strong>{{message}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+<div class="row">
+
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+
+         
+<div class="alert alert-success" role="alert">
+    PAYMENT STATUS
+    </div>
+    <div class="container mt-3">
+    
+        
+        <div class="col my-4">
+    
+            <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
+            {% if response.RESPCODE == '01' %}
+            ORDER SUCCESS
+            <br>
+
+            {% else %}
+            <h2>ORDER FAILURE</h2>
+            {% endif%}
+    
+        </div>
+    
+    </div>
+
+
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+
+
+
+</div>
+{% endblock body %} {% endcomment %}
+
+
+{% extends 'base.html' %}
+{% block title %}Payment Status{% endblock title %}
+{% block body %}
+<h1 class="text-center">Payment Status</h1>
+<div class="container mt-2">
+    <!-- Display Django messages -->
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+        <strong>{{message}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <!-- Payment Status Alert -->
+            <div class="alert alert-success" role="alert">
+                PAYMENT STATUS
+            </div>
+
+            <div class="container mt-3">
+                <div class="col my-4">
+                    <!-- Display Order ID -->
+                    <h2>Payment Status for Order ID: {{response.orderId}}</h2>
+
+                    <!-- Check Transaction Status -->
+                    {% if response.txStatus == "SUCCESS" %}
+                        <div class="alert alert-success" role="alert">
+                            <strong>ORDER SUCCESS</strong>
+                        </div>
+                        <p><strong>Transaction ID:</strong> {{response.referenceId}}</p>
+                        <p><strong>Payment Mode:</strong> {{response.paymentMode}}</p>
+                        <p><strong>Amount Paid:</strong> ₹{{response.orderAmount}}</p>
+                        <p><strong>Transaction Time:</strong> {{response.txTime}}</p>
+                    {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>ORDER FAILURE</strong>
+                        </div>
+                        <p><strong>Error Message:</strong> {{response.txMsg}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+{% endblock body %}

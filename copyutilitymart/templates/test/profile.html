@@ -1,0 +1,93 @@
+{% extends 'test/base.html' %}
+
+{% block title %}My Profile{% endblock title %}
+
+{% block body %}
+<section id="portfolio" class="portfolio py-5">
+    <div class="container">
+        <h1 class="mb-4">My Orders</h1>
+        {% if orders and orders|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Amount Paid</th>
+                    <th scope="col">Payment Status</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Delivery Status</th>
+                    <th scope="col">Delivered</th>
+                    <th scope="col">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_data in orders %}
+                <tr>
+                    <th scope="row">{{order_data.order.oid|default:order_data.order.order_id}}</th>
+                    <td>{{order_data.order.name}}</td>
+                    <td>
+                        {% for item_id, item_details in order_data.items.items %}
+                            {{ item_details.name }} (Qty: {{ item_details.qty }})<br>
+                        {% empty %}
+                            No items found
+                        {% endfor %}
+                    </td>
+                    <td>₹{{order_data.order.amount|default:order_data.order.amountpaid}}</td>
+                    <td>
+                        {% if order_data.order.paymentstatus == "PAID" or order_data.order.paymentstatus == "SUCCESS" %}
+                            <span class="text-success">PAID</span>
+                        {% elif order_data.order.paymentstatus == "FAILED" %}
+                            <span class="text-danger">FAILED</span>
+                        {% elif order_data.order.paymentstatus %}
+                            <span class="text-warning">{{order_data.order.paymentstatus}}</span>
+                        {% else %}
+                            <span class="text-danger">PENDING</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{order_data.order.address}}<br>
+                        {{order_data.order.city}}, {{order_data.order.state}}<br>
+                        PIN: {{order_data.order.zip_code}}
+                    </td>
+                    <td>{{order_data.order.phone}}</td>
+                    
+                    {% if order_data.status %}
+                        <td>{{order_data.status.update_desc|default:"Processing"}}</td>
+                        <td>
+                            {% if order_data.status.delivered %}
+                                <i class="fa-solid fa-circle-check text-success"></i> Delivered
+                            {% elif order_data.status.update_desc %}
+                                <i class="fa-solid fa-truck text-primary"></i> In Transit
+                            {% else %}
+                                <i class="fa-solid fa-clock text-warning"></i> Processing
+                            {% endif %}
+                        </td>
+                        <td>{{order_data.status.timestamp|default:"-"}}</td>
+                    {% else %}
+                        <td>Order Received</td>
+                        <td><i class="fa-solid fa-clock text-warning"></i> Processing</td>
+                        <td>-</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
+        {% if orders %}
+            {% if orders|length == 0 %}
+            <div class="alert alert-info text-center">
+                <p class="mb-0">You haven't placed any orders yet.</p>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-warning text-center">
+                <p class="mb-0">Unable to fetch your orders. Please try again.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock body %}
