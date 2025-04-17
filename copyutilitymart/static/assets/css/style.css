@@ -366,7 +366,7 @@ h6 {
 
 #hero.hero-home {
   height: 90vh;
-  background: url("../../images/bgg.png") top center;
+  background: url("{% static 'images/bgg.png' %}") top center;
   background-size: cover;
 }
 
